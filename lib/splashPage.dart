@@ -1,4 +1,5 @@
 import 'package:todoapp/home.dart';
+import 'package:todoapp/welcomeScreen.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
@@ -22,7 +23,7 @@ class _SplashPageState extends State<SplashPage> {
   void navegar() {
     Future.delayed(Duration(seconds: 3), () {
       aaaaNavigatorKey.currentState?.pushReplacement(
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => WelcomeScreen()),
       );
     });
   }
@@ -31,13 +32,13 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Titulo da janela",
-      color: Colors.red,
+      color: Colors.black,
       navigatorKey: aaaaNavigatorKey,
 
       home: Scaffold(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.black,
         body: Container(
-          color: Colors.red,
+          color: Colors.black,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Column(
