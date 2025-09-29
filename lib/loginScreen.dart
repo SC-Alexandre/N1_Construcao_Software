@@ -75,7 +75,7 @@ class LoginScreen extends StatelessWidget {
               ),
               onPressed: () {
                 // Lógica para o login
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
@@ -96,7 +96,7 @@ class LoginScreen extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     // Navegar para a tela de registro
-                    Navigator.push(
+                    Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => Registerscreen()),
                   );

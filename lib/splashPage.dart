@@ -1,4 +1,5 @@
 import 'package:todoapp/home.dart';
+import 'package:todoapp/onboarding.dart';
 import 'package:todoapp/welcomeScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ class _SplashPageState extends State<SplashPage> {
   void navegar() {
     Future.delayed(Duration(seconds: 3), () {
       aaaaNavigatorKey.currentState?.pushReplacement(
-        MaterialPageRoute(builder: (context) => WelcomeScreen()),
+        MaterialPageRoute(builder: (context) => OnboardingScreen()),
       );
     });
   }

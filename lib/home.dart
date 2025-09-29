@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todoapp/add_task_screen.dart';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -7,61 +9,54 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      // AppBar com o título "Index"
       appBar: AppBar(
         title: const Text('Index'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
+        automaticallyImplyLeading: false,
       ),
-      
-      // Corpo da tela
-      body: Stack(
-        children: [
-          // 1. Imagem de fundo
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/zeroitens.png"),
-                Container(height: 20),
-                fit: BoxFit.cover,
-              ),
+
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              "assets/images/zeroitens.png",
+              width: 250,
+              height: 200,
+              fit: BoxFit.cover,
             ),
-          ),
-          // 2. Conteúdo de texto centralizado
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  'What do you want to do today?', // 
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Tap + to add your tasks', // 
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ],
+            const SizedBox(height: 20),
+            const Text(
+              'O que você quer fazer hoje?',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            const Text(
+              'Clique no + para adicionar suas tarefas',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+          ],
+        ),
       ),
-      // 3. Botão flutuante para adicionar tarefas
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Lógica para adicionar uma nova tarefa
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddTaskScreen()),
+          );
         },
-        child: const Icon(Icons.add), // 
+        child: const Icon(Icons.add),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // local do botão no layout
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

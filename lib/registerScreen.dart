@@ -114,7 +114,7 @@ class Registerscreen extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     // Navegar para a tela de login
-                    Navigator.push(
+                    Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
