@@ -97,6 +97,10 @@ class Registerscreen extends StatelessWidget {
               ),
               onPressed: () {
                 // Lógica para o registrar
+                 Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
               },
               child: Text(
                 'Registrar',

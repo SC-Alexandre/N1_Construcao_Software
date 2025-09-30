@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:todoapp/task_model.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({Key? key}) : super(key: key);
@@ -19,14 +20,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   void dispose() {
-    // É importante limpar os controladores para libertar memória
+    // limpar os controladores para libertar memória
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
 
   // --- 2. FUNÇÃO PARA O SELETOR DE DATA E HORA ---
-  // A função é 'async' porque temos que 'await' (esperar) a resposta do utilizador.
+  // A função é 'async' porque temos que 'await' (esperar) a resposta do usuario.
   Future<void> _selectDate(BuildContext context) async {
     // Primeiro, mostramos o seletor de data
     final DateTime? pickedDate = await showDatePicker(
@@ -36,7 +37,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       lastDate: DateTime(2040),    // Data máxima que pode ser escolhida
     );
 
-    // Se o utilizador não escolher uma data (cancelar), não fazemos nada.
+    // Se o usuario não escolher uma data (cancelar), não fazemos nada.
     if (pickedDate == null) return;
 
     // Depois, se uma data foi escolhida, mostramos o seletor de hora
@@ -46,7 +47,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       initialEntryMode: TimePickerEntryMode.input,
     );
 
-    // Se o utilizador não escolher uma hora, não fazemos nada.
+    // Se o usuario não escolher uma hora, não fazemos nada.
     if (pickedTime == null) return;
 
     // Se ambos foram escolhidos, combinamos a data e a hora num único DateTime.
@@ -67,7 +68,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   // --- 3. FUNÇÃO PARA O SELETOR DE PRIORIDADE ---
   Future<void> _selectPriority(BuildContext context) async {
-    // Usamos showModalBottomSheet para criar o painel que sobe (Página 15)
+    // showModalBottomSheet para criar o painel que sobe
     final int? result = await showModalBottomSheet<int>(
       context: context,
       backgroundColor: const Color(0xFF272727), // Cor de fundo do painel
@@ -81,7 +82,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             children: [
               const Text('Prioridade da tarefa', style: TextStyle(color: Colors.white, fontSize: 16)),
               const SizedBox(height: 16),
-              // Usamos GridView para criar a grelha de 1 a 10
               GridView.builder(
                 shrinkWrap: true, // Impede o GridView de ter scroll infinito
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -120,7 +120,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       },
     );
 
-    // Se o utilizador selecionou uma prioridade, atualizamos o estado
+    // Se o usuario selecionou uma prioridade, atualizamos o estado
     if (result != null) {
       setState(() {
         _selectedPriority = result;
@@ -128,10 +128,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
-  // --- 4. FUNÇÃO PARA O SELETOR DE CATEGORIA (similar à prioridade) ---
+  // --- 4. FUNÇÃO PARA O SELETOR DE CATEGORIA ---
   Future<void> _selectCategory(BuildContext context) async {
-    // Lista de categorias de exemplo, como na página 17
-    final List<String> categories = ['Mercado', 'Trabalho', 'Esporte', 'Design', 'Faculdade', 'Social', 'Musica', 'Saúde', 'Filme'];
+    // Lista de categorias  
+    final List<String> categories = ["Design", "Entretenimento", "Esporte", "Faculdade", "Mercado", "Outro", "Saúde", "Social", "Trabalho"];
     
     final String? result = await showModalBottomSheet<String>(
       context: context,
@@ -226,7 +226,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             const Spacer(), // Empurra os itens seguintes para o fundo
 
             // --- 5. EXIBIR VALORES SELECIONADOS ---
-            // Esta Row mostra os valores escolhidos pelo utilizador.
             Row(
               children: [
                 if (_selectedDate != null)
@@ -274,12 +273,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       // Botão Flutuante para criar a tarefa
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Lógica para salvar a nova tarefa
-          // Exemplo:
-          // final title = _titleController.text;
-          // final description = _descriptionController.text;
-          // print('Tarefa: $title, Descrição: $description');
-          Navigator.of(context).pop(); // Fecha a tela após adicionar
+          // --- LÓGICA DE SALVAR A TAREFA ---
+          if (_titleController.text.isNotEmpty) {
+
+            // novo objeto Task com os dados da tela
+            final newTask = Task(
+              title: _titleController.text,
+              description: _descriptionController.text,
+              date: _selectedDate,
+              priority: _selectedPriority,
+              category: _selectedCategory,
+            );
+
+            // Navigator.pop para FECHAR a tela e ENVIAR a 'newTask' de volta
+            Navigator.of(context).pop(newTask);
+          }
         },
         child: const Icon(Icons.send),
       ),

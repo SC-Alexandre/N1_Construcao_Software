@@ -2,41 +2,81 @@ import 'package:flutter/material.dart';
 import 'package:todoapp/home.dart';
 import 'package:todoapp/registerScreen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final String _adminUsername = 'admin';
+  final String _adminPassword = '123';
+
+  @override
+  void dispose() {
+    // limpar os controladores ao fechar a tela para libertar memória.
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _validarLogin() {
+    final String enteredUsername = _usernameController.text;
+    final String enteredPassword = _passwordController.text;
+
+    if (enteredUsername == _adminUsername && enteredPassword == _adminPassword) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Usuário ou senha inválidos.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
+        title: const Text(
           'Login',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),
-
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 40),
-            Text(
+            const SizedBox(height: 40),
+            const Text(
               'Nome de Usuario',
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextFormField(
-              style: TextStyle(color: Colors.white),
+              controller: _usernameController,
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Digite seu nome de Usuario',
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.grey[850],
                 border: OutlineInputBorder(
@@ -45,18 +85,19 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 24),
-            Text(
+            const SizedBox(height: 24),
+            const Text(
               'Senha',
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextFormField(
+              controller: _passwordController,
               obscureText: true,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: '••••••••••••',
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.grey[850],
                 border: OutlineInputBorder(
@@ -65,44 +106,37 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              onPressed: () {
-                // Lógica para o login
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-              },
-              child: Text(
+              onPressed: _validarLogin,
+              child: const Text(
                 'Login',
                 style: TextStyle(fontSize: 18),
               ),
             ),
-            Spacer(), // Empurra o próximo widget para o final da tela
+            const SizedBox(height: 100),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Não possui uma conta?", // 
+                const Text(
+                  "Não possui uma conta?",
                   style: TextStyle(color: Colors.grey),
                 ),
                 TextButton(
                   onPressed: () {
-                    // Navegar para a tela de registro
                     Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => Registerscreen()),
-                  );
+                    );
                   },
-                  child: Text(
-                    'Registre-se', // 
+                  child: const Text(
+                    'Registre-se',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
