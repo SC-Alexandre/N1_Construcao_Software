@@ -26,8 +26,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     super.dispose();
   }
 
-  // --- 2. FUNÇÃO PARA O SELETOR DE DATA E HORA ---
-  // A função é 'async' porque temos que 'await' (esperar) a resposta do usuario.
   Future<void> _selectDate(BuildContext context) async {
     // Primeiro, mostramos o seletor de data
     final DateTime? pickedDate = await showDatePicker(
@@ -37,7 +35,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       lastDate: DateTime(2040),    // Data máxima que pode ser escolhida
     );
 
-    // Se o usuario não escolher uma data (cancelar), não fazemos nada.
     if (pickedDate == null) return;
 
     // Depois, se uma data foi escolhida, mostramos o seletor de hora
@@ -47,10 +44,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       initialEntryMode: TimePickerEntryMode.input,
     );
 
-    // Se o usuario não escolher uma hora, não fazemos nada.
     if (pickedTime == null) return;
 
-    // Se ambos foram escolhidos, combinamos a data e a hora num único DateTime.
     final DateTime finalDateTime = DateTime(
       pickedDate.year,
       pickedDate.month,
@@ -59,14 +54,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       pickedTime.minute,
     );
     
-    // Usamos setState para atualizar a nossa variável de estado e reconstruir a UI
-    // para mostrar a data e hora selecionadas.
     setState(() {
       _selectedDate = finalDateTime;
     });
   }
 
-  // --- 3. FUNÇÃO PARA O SELETOR DE PRIORIDADE ---
   Future<void> _selectPriority(BuildContext context) async {
     // showModalBottomSheet para criar o painel que sobe
     final int? result = await showModalBottomSheet<int>(
@@ -92,10 +84,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 itemCount: 10,
                 itemBuilder: (context, index) {
                   final priority = index + 1;
-                  // Usamos GestureDetector para tornar cada item clicável
                   return GestureDetector(
                     onTap: () {
-                      // Ao clicar, fechamos o painel e retornamos o número da prioridade
                       Navigator.pop(context, priority);
                     },
                     child: Container(
@@ -120,7 +110,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       },
     );
 
-    // Se o usuario selecionou uma prioridade, atualizamos o estado
     if (result != null) {
       setState(() {
         _selectedPriority = result;
@@ -128,10 +117,20 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
-  // --- 4. FUNÇÃO PARA O SELETOR DE CATEGORIA ---
+  // --- FUNÇÃO DE CATEGORIA ATUALIZADA ---
   Future<void> _selectCategory(BuildContext context) async {
-    // Lista de categorias  
-    final List<String> categories = ["Design", "Entretenimento", "Esporte", "Faculdade", "Mercado", "Outro", "Saúde", "Social", "Trabalho"];
+    // 1. Em vez de uma lista de Strings, usamos um Map para associar nomes a ícones.
+    final Map<String, IconData> categoriesWithIcons = {
+      'Trabalho': Icons.work,
+      'Faculdade': Icons.school,
+      'Mercado': Icons.shopping_cart,
+      'Esporte': Icons.sports_soccer,
+      'Design': Icons.design_services,
+      'Entretenimento': Icons.movie,
+      'Saúde': Icons.health_and_safety,
+      'Social': Icons.people,
+      'Outro': Icons.more_horiz,
+    };
     
     final String? result = await showModalBottomSheet<String>(
       context: context,
@@ -145,17 +144,23 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             children: [
               const Text('Selecione a Categoria', style: TextStyle(color: Colors.white, fontSize: 16)),
               const SizedBox(height: 16),
-              // Usamos Wrap para que as categorias quebrem a linha automaticamente
               Wrap(
                 spacing: 8.0,
                 runSpacing: 8.0,
-                children: categories.map((category) {
+                // 2. Mapeamos as entradas do Map em vez da lista.
+                children: categoriesWithIcons.entries.map((entry) {
+                  final categoryName = entry.key;
+                  final categoryIcon = entry.value;
+
                   return GestureDetector(
                     onTap: () {
-                      Navigator.pop(context, category);
+                      // Ao tocar, continuamos a retornar apenas o nome da categoria.
+                      Navigator.pop(context, categoryName);
                     },
                     child: Chip(
-                      label: Text(category),
+                      // 3. Usamos a propriedade 'avatar' do Chip para exibir o ícone.
+                      avatar: Icon(categoryIcon, color: Colors.white, size: 18),
+                      label: Text(categoryName),
                       backgroundColor: Colors.grey[800],
                       labelStyle: const TextStyle(color: Colors.white),
                     ),
@@ -199,20 +204,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Campo de Texto para o Título da Tarefa
             TextField(
               controller: _titleController,
               style: const TextStyle(color: Colors.white, fontSize: 20),
               decoration: const InputDecoration(
                 hintText: 'Titulo Tarefa',
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
-                border: InputBorder.none, // Remove a linha de baixo
+                border: InputBorder.none,
               ),
             ),
             
             const SizedBox(height: 16),
 
-            // Campo de Texto para a Descrição
             TextField(
               controller: _descriptionController,
               style: const TextStyle(color: Colors.white),
@@ -223,9 +226,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
             ),
             
-            const Spacer(), // Empurra os itens seguintes para o fundo
+            const Spacer(),
 
-            // --- 5. EXIBIR VALORES SELECIONADOS ---
             Row(
               children: [
                 if (_selectedDate != null)
@@ -250,19 +252,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ],
             ),
 
-            // Botões de Ação (Calendário, Categoria, Prioridade)
             Row(
               children: [
                 IconButton(
-                  onPressed: () => _selectDate(context), // Chama a função do seletor de data
+                  onPressed: () => _selectDate(context),
                   icon: const Icon(Icons.calendar_today, color: Colors.white),
                 ),
                 IconButton(
-                  onPressed: () => _selectCategory(context), // Chama a função do seletor de categoria
+                  onPressed: () => _selectCategory(context),
                   icon: const Icon(Icons.sell_outlined, color: Colors.white),
                 ),
                 IconButton(
-                  onPressed: () => _selectPriority(context), // Chama a função do seletor de prioridade
+                  onPressed: () => _selectPriority(context),
                   icon: const Icon(Icons.flag_outlined, color: Colors.white),
                 ),
               ],
@@ -270,13 +271,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           ],
         ),
       ),
-      // Botão Flutuante para criar a tarefa
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // --- LÓGICA DE SALVAR A TAREFA ---
           if (_titleController.text.isNotEmpty) {
-
-            // novo objeto Task com os dados da tela
             final newTask = Task(
               title: _titleController.text,
               description: _descriptionController.text,
@@ -284,8 +281,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               priority: _selectedPriority,
               category: _selectedCategory,
             );
-
-            // Navigator.pop para FECHAR a tela e ENVIAR a 'newTask' de volta
             Navigator.of(context).pop(newTask);
           }
         },
